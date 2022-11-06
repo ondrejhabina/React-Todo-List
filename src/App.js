@@ -1,7 +1,7 @@
 
 import './App.css';
 import styled from 'styled-components'
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 
 const Container = styled.div`
@@ -53,7 +53,7 @@ const TodoInputStyling = styled.div `
 
 const TodoListStyling = styled.div `
   font.family:s'Open Sans', sans-serif;
-  padding: 0.3vmax;
+  padding: 0.2vmax;
   margin-top: 2vmax;
   border-top: 2px solid;
   color: #20B2AA;
@@ -64,10 +64,25 @@ const TodoStyling = styled.div `
   border-radius: 0.5vmax;
   font.family:s'Open Sans', sans-serif;
   font-size: 26px;
-  padding: 1vmax;
+  width: 80%;
+  padding: 0.5vmax;
+  margin: auto;
   margin-top: 2vmax;
   border: 2px solid;
-  text-align: left;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+    button {
+      align-self: center;
+      border: 2px solid red;
+      width: 40px;
+      height: 40px;
+      border-radius: 0.5vmax;
+      &:hover {
+        background-color: red;
+        border: 2px solid white;
+      }
+    }
 `
 
 function Header() {
@@ -76,35 +91,47 @@ function Header() {
   );
 }
 
-function TodoList({allTodos}) {
+function TodoList({allTodos, closeTodo}) {
   let todoArr = [...allTodos]
   return(
     todoArr.map(todo => {
-      return <TodoStyling><Todo key={todo.key} todoItem={todo.value} /></TodoStyling>
+      return <Todo key={todo.key} id={todo.key} todoItem={todo.value} handleClose={closeTodo}/>
     })
   )
 }
 
-function Todo({todoItem}) {
+function Todo({id, todoItem, handleClose}) {
   return(
-    <div>
-      {todoItem}
-    </div>
+    <TodoStyling id={id}>
+      <p>{todoItem}</p>
+      <button onClick={() => handleClose(id)}></button>
+    </TodoStyling>
   ) 
 }
 
+const localStorageKey = 'mykey'
 
 function App() {
   const [todos, setTodos] = React.useState([])
 
   const inputValue = useRef();
 
-  function handleSubmit(event) {
+  useEffect(() => {
+    const storedTodos = JSON.parse(localStorage.getItem(localStorageKey))
+    if(storedTodos) setTodos(storedTodos);
+  }, []) //passing an empty array to make the function only run once
+
+  useEffect(() => {
+    localStorage.setItem(localStorageKey, JSON.stringify(todos)) //Todos are in json format => stringify
+  }, [todos])
+
+
+  function handleSubmit() {
     let submittedTodo = inputValue.current.value;
     if (submittedTodo === '') {
       return
     }
-    console.log(submittedTodo)
+
     setTodos(todosBefore => {
       let todoKey = Math.floor(Math.random() * 10000);
       return ([...todosBefore, {key: todoKey, value: submittedTodo}])
@@ -113,8 +140,12 @@ function App() {
     inputValue.current.value = '';
   }
 
-  function handleRemoval(event) {
+  function handleRemoval() {
     setTodos([])
+  }
+
+  function handleTodoRemoval(id) {
+    setTodos(todos.filter((eachTodo) => eachTodo.key !== id))
   }
 
 
@@ -129,7 +160,7 @@ function App() {
         <FormButton onClick={handleRemoval}>Remove All</FormButton>
       </TodoInputStyling>
       <TodoListStyling>
-        <TodoList allTodos={todos}>
+        <TodoList allTodos={todos} closeTodo={handleTodoRemoval}>
 
         </TodoList>
       </TodoListStyling>
