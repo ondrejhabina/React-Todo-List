@@ -1,20 +1,14 @@
-
 import './App.css';
 import styled from 'styled-components'
-import React, { useRef } from 'react';
-
+import React, { useEffect, useRef } from 'react';
+import TodoList from './TodoList';
+import Header from './Header';
 
 const Container = styled.div`
   font-family: 'Stick No Bills', sans-serif;
   text-align: center;
   color: white;
   width: 50vw;
-`
-
-const HeaderStyling = styled.div `
-  font-size: 58px;
-  background-color: #20B2AA;
-  border-radius: 8px;
 `
 
 const FormButton = styled.button `
@@ -36,7 +30,7 @@ const FormButton = styled.button `
 
 `
 
-const TodoInputStyling = styled.div `
+const TodoInputStyling = styled.section `
   padding-top: 2vmax;
 
   > input {
@@ -51,60 +45,38 @@ const TodoInputStyling = styled.div `
   }
 `
 
-const TodoListStyling = styled.div `
+const TodoListStyling = styled.section `
   font.family:s'Open Sans', sans-serif;
-  padding: 0.3vmax;
+  padding: 0.2vmax;
   margin-top: 2vmax;
   border-top: 2px solid;
   color: #20B2AA;
   font-size: 24px;
 `
 
-const TodoStyling = styled.div `
-  border-radius: 0.5vmax;
-  font.family:s'Open Sans', sans-serif;
-  font-size: 26px;
-  padding: 1vmax;
-  margin-top: 2vmax;
-  border: 2px solid;
-  text-align: left;
-`
-
-function Header() {
-  return(
-    <div>Write it down!</div>
-  );
-}
-
-function TodoList({allTodos}) {
-  let todoArr = [...allTodos]
-  return(
-    todoArr.map(todo => {
-      return <TodoStyling><Todo key={todo.key} todoItem={todo.value} /></TodoStyling>
-    })
-  )
-}
-
-function Todo({todoItem}) {
-  return(
-    <div>
-      {todoItem}
-    </div>
-  ) 
-}
-
+const localStorageKey = 'mykey'
 
 function App() {
   const [todos, setTodos] = React.useState([])
 
   const inputValue = useRef();
 
-  function handleSubmit(event) {
+  useEffect(() => {
+    const storedTodos = JSON.parse(localStorage.getItem(localStorageKey))
+    if(storedTodos) setTodos(storedTodos);
+  }, []) //passing an empty dependancy array to make the function only run once
+
+  useEffect(() => {
+    localStorage.setItem(localStorageKey, JSON.stringify(todos)) //Todos are in json format => stringify for LS
+  }, [todos])
+
+
+  function handleSubmit() {
     let submittedTodo = inputValue.current.value;
     if (submittedTodo === '') {
       return
     }
-    console.log(submittedTodo)
+
     setTodos(todosBefore => {
       let todoKey = Math.floor(Math.random() * 10000);
       return ([...todosBefore, {key: todoKey, value: submittedTodo}])
@@ -113,24 +85,25 @@ function App() {
     inputValue.current.value = '';
   }
 
-  function handleRemoval(event) {
+  function handleRemoval() {
     setTodos([])
+  }
+
+  function handleTodoRemoval(id) {
+    setTodos(todos.filter((eachTodo) => eachTodo.key !== id))
   }
 
 
   return (
     <Container>
-      <HeaderStyling>
-        <Header />
-      </HeaderStyling>
+      <Header />
       <TodoInputStyling>
         <input ref={inputValue} id='todoInput' type='text'></input>
         <FormButton onClick={handleSubmit}>Add Todo</FormButton>
         <FormButton onClick={handleRemoval}>Remove All</FormButton>
       </TodoInputStyling>
       <TodoListStyling>
-        <TodoList allTodos={todos}>
-
+        <TodoList allTodos={todos} closeTodo={handleTodoRemoval}>
         </TodoList>
       </TodoListStyling>
     </Container>
