@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/ondrejhabina/React-Todo-List/static/css/main.cf94c26d.css",
-    "main.js": "/ondrejhabina/React-Todo-List/static/js/main.92e123b4.js",
+    "main.js": "/ondrejhabina/React-Todo-List/static/js/main.c923affc.js",
     "static/js/787.28cb0dcd.chunk.js": "/ondrejhabina/React-Todo-List/static/js/787.28cb0dcd.chunk.js",
     "index.html": "/ondrejhabina/React-Todo-List/index.html",
     "main.cf94c26d.css.map": "/ondrejhabina/React-Todo-List/static/css/main.cf94c26d.css.map",
-    "main.92e123b4.js.map": "/ondrejhabina/React-Todo-List/static/js/main.92e123b4.js.map",
+    "main.c923affc.js.map": "/ondrejhabina/React-Todo-List/static/js/main.c923affc.js.map",
     "787.28cb0dcd.chunk.js.map": "/ondrejhabina/React-Todo-List/static/js/787.28cb0dcd.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.cf94c26d.css",
-    "static/js/main.92e123b4.js"
+    "static/js/main.c923affc.js"
   ]
 }
