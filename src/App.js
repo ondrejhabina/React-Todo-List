@@ -70,6 +70,7 @@ function App() {
     localStorage.setItem(localStorageKey, JSON.stringify(todos)) //Todos are in json format => stringify for LS
   }, [todos])
 
+  document.addEventListener('keydown', handleEnterSubmit);
 
   function handleSubmit() {
     let submittedTodo = inputValue.current.value;
@@ -83,6 +84,12 @@ function App() {
     })
     
     inputValue.current.value = '';
+  }
+
+  function handleEnterSubmit (event) {
+    if(event.key === 'Enter') {
+      handleSubmit();
+    }
   }
 
   function handleRemoval() {
